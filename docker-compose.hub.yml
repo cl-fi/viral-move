@@ -1,18 +1,25 @@
-# Local development: builds image from source
-# For Docker Hub pull version, see docker-compose.hub.yml
+# ─────────────────────────────────────────────────────────────────
+#  Viral Move — Docker Hub quick-start
+#  Pull a pre-built image and run with just your API keys.
+#
+#  Usage:
+#    1. cp .env.example .env  &&  edit .env
+#    2. docker compose -f docker-compose.hub.yml up
+#    3. Open http://localhost:18789   (OpenClaw WebChat dashboard)
+# ─────────────────────────────────────────────────────────────────
 
 services:
   viral-move:
-    build: .
+    image: DOCKERHUB_USERNAME/viral-move:latest   # ← replace with real image name
     container_name: viral-move-agent
     ports:
-      - "18789:18789"
+      - "18789:18789"   # OpenClaw WebChat dashboard
     environment:
       # ── Sui ──────────────────────────────────────────────────────
       - SUI_NETWORK=${SUI_NETWORK:-testnet}
-      - SUI_PRIVATE_KEY=${SUI_PRIVATE_KEY}   # or use secrets below
+      - SUI_PRIVATE_KEY=${SUI_PRIVATE_KEY}
 
-      # ── LLM (OpenClaw reads these directly) ──────────────────────
+      # ── LLM — at least one required ──────────────────────────────
       - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
       - OPENAI_API_KEY=${OPENAI_API_KEY}
 
@@ -23,14 +30,10 @@ services:
       # ── Walrus ───────────────────────────────────────────────────
       - WALRUS_EPOCHS=${WALRUS_EPOCHS:-5}
 
-    # Optional: mount for persistent generated contracts + Sui state
+    # Persist Sui client config + generated contracts across restarts
     volumes:
       - sui-config:/home/viral/.sui
       - generated-contracts:/home/viral/viral-move/contracts/generated
-
-    # Optional: use Docker secret instead of SUI_PRIVATE_KEY env var
-    # secrets:
-    #   - sui_private_key
 
     security_opt:
       - no-new-privileges:true
@@ -39,7 +42,3 @@ services:
 volumes:
   sui-config:
   generated-contracts:
-
-# secrets:
-#   sui_private_key:
-#     file: ./secrets/sui_private_key.txt
