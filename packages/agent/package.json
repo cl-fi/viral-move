@@ -4,6 +4,9 @@
   "description": "Viral Move - Autonomous AI meme token dev on Sui. Anti-rug, provably transparent.",
   "type": "module",
   "main": "dist/index.js",
+  "bin": {
+    "viral-move": "dist/index.js"
+  },
   "scripts": {
     "build": "tsc",
     "start": "node dist/index.js",

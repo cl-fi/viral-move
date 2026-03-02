@@ -1,18 +1,30 @@
 {
-  "auto_approve": [
-    "node /home/node/viral-move/dist/cli.js status",
-    "node /home/node/viral-move/dist/cli.js history",
-    "node /home/node/viral-move/dist/cli.js monitor",
-    "clawhub search *",
-    "clawhub list",
-    "sui client gas",
-    "sui client active-address"
-  ],
-  "require_approval": [
-    "node /home/node/viral-move/dist/cli.js launch",
-    "node /home/node/viral-move/dist/cli.js trade",
-    "node /home/node/viral-move/dist/cli.js evolve",
-    "node /home/node/viral-move/dist/cli.js loop",
-    "clawhub install *"
-  ]
+  "version": 1,
+  "defaults": {
+    "security": "allowlist",
+    "ask": "on-miss",
+    "askFallback": "deny",
+    "autoAllowSkills": true
+  },
+  "agents": {
+    "viral-move": {
+      "security": "allowlist",
+      "ask": "on-miss",
+      "autoAllowSkills": true,
+      "allowlist": [
+        {
+          "pattern": "**/viral-move",
+          "id": "viral-move-cli"
+        },
+        {
+          "pattern": "**/sui",
+          "id": "sui-cli"
+        },
+        {
+          "pattern": "**/clawhub",
+          "id": "clawhub-cli"
+        }
+      ]
+    }
+  }
 }

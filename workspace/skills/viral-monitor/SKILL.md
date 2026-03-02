@@ -1,38 +1,33 @@
 ---
 name: viral-monitor
 description: Monitor social metrics from Telegram and generate trade signals for deployed tokens
-version: 1.0.0
-metadata:
-  openclaw:
-    emoji: "📊"
-    requires:
-      bins:
-        - node
+metadata: {"openclaw": {"emoji": "📊", "requires": {"bins": ["viral-move"]}}}
 ---
 
 # Viral Monitor
 
 Check social engagement metrics and generate trade signals.
 
-## Usage
+## When to use
 
-```bash
-# Show agent status (balance, deployed tokens, recent signals)
-cd /home/node/viral-move && node dist/cli.js status
+When the user asks about token performance, community sentiment, or trade signals. Also used during heartbeat checks.
 
-# Run one monitoring round (collect metrics + generate signal)
-cd /home/node/viral-move && node dist/cli.js monitor
+## Commands
 
-# Execute a trade based on current signal
-cd /home/node/viral-move && node dist/cli.js trade
-
-# View Walrus proof history
-cd /home/node/viral-move && node dist/cli.js history
-```
+- `viral-move status` — Show agent wallet, balance, network, config
+- `viral-move monitor` — Collect TG metrics + generate buy/hold/sell signal
+- `viral-move history` — Show Walrus proof chain info
 
 ## What It Monitors
 
 - Telegram member count and growth rate
 - Message frequency and engagement
-- Sentiment analysis (keyword-based: moon/rocket vs dump/rug)
+- Sentiment analysis (keyword-based: moon/rocket/bull vs dump/rug/scam)
 - Generates buy/hold/sell signal with strength score (0-100)
+
+## Reporting
+
+Summarize the results naturally. Include:
+- Current metrics (members, messages, sentiment score)
+- Trade signal and its reasoning
+- Any notable trends or alerts

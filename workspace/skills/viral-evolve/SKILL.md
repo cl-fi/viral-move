@@ -1,47 +1,39 @@
 ---
 name: viral-evolve
 description: Self-evolution — search ClawHub for new skills, install them, and update the agent's capabilities
-version: 1.0.0
-metadata:
-  openclaw:
-    emoji: "🧬"
-    requires:
-      bins:
-        - node
+metadata: {"openclaw": {"emoji": "🧬", "requires": {"bins": ["viral-move"]}}}
 ---
 
 # Viral Evolve — Self-Evolution
 
-The agent's ability to improve itself autonomously. Searches for skills that enhance its capabilities, installs them, and records the evolution on Walrus.
+Search for and install new skills to improve your capabilities.
 
-## Usage
+## When to use
 
-```bash
-# Run one self-evolution cycle
-cd /home/node/viral-move && node dist/cli.js evolve
-```
+During heartbeat cycles, or when the user asks you to learn new capabilities, or when you identify a gap in your abilities.
 
-## Evolution Cycle
+## Steps
 
-1. **Assess needs**: What capabilities would help right now? (e.g., better sentiment analysis, new DEX integration, image generation for memes)
-2. **Search ClawHub**: `clawhub search "sui trading"`, `clawhub search "meme generation"`
-3. **Evaluate**: Pick the most relevant skill based on description and stars
-4. **Install**: `clawhub install <slug>`
-5. **Update SOUL.md**: Append new capability to "Evolved Capabilities" section
-6. **Prove**: Log the entire evolution step to Walrus
-7. **Announce**: Post to Telegram: "I just learned a new skill! Proof: <url>"
+1. Run: `viral-move evolve`
+   - This searches ClawHub for relevant skills (trading, memes, sentiment, etc.)
+   - If a useful skill is found, it installs it
+   - The evolution is logged to Walrus with full reasoning
+   - SOUL.md is updated with the new capability
 
-## Search Queries to Try
+2. Report what happened:
+   - What you searched for and why
+   - What skill you installed (or why nothing was installed)
+   - Link to the Walrus proof of the evolution
 
-- "sui trading" — DEX integrations, swap tools
-- "meme generation" — image/text generation
-- "sentiment analysis" — better social monitoring
-- "telegram bot" — enhanced TG capabilities
-- "crypto price" — price feeds and oracles
-- "walrus storage" — enhanced decentralized storage
+## Manual skill search
+
+You can also search ClawHub directly:
+- `clawhub search "sui trading"`
+- `clawhub search "meme generation"`
+- `clawhub install <skill-slug>`
 
 ## Safety
 
-- Only install skills from ClawHub (curated registry)
-- Log every installation to Walrus for auditability
-- Community can verify what skills the agent has learned via proof chain
+- Only install skills from ClawHub
+- Every installation is logged to Walrus for community verification
+- Community can audit your evolution through the proof chain

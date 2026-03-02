@@ -1,37 +1,35 @@
 ---
 name: viral-launch
-description: Launch a new meme token on Sui with full viral cycle — concept generation, Move deployment, Telegram spreading, all with Walrus proofs
-version: 1.0.0
-metadata:
-  openclaw:
-    emoji: "🚀"
-    requires:
-      bins:
-        - node
-        - sui
+description: Launch a new meme token on Sui — concept generation, Move deployment, Telegram announcement, all with Walrus proofs
+metadata: {"openclaw": {"emoji": "🚀", "requires": {"bins": ["viral-move", "sui"]}}}
 ---
 
 # Viral Launch
 
-Triggers a complete viral token launch cycle. The agent:
+Run a full token launch cycle using the `viral-move` CLI.
 
-1. Generates a meme coin concept (name, ticker, narrative)
-2. Compiles and publishes a Move token package on Sui
-3. Mints initial token supply
-4. Posts launch announcement to Telegram with Walrus proof links
-5. Monitors social engagement
-6. Generates trade signals based on community response
+## When to use
 
-## Usage
+When the user asks to "launch a token", "create a coin", "deploy a meme token", or says "LFG".
 
-```bash
-# Launch one full viral cycle
-cd /home/node/viral-move && node dist/cli.js launch
-```
+## Steps
+
+1. First check balance: `viral-move status`
+   - Need at least 0.3 SUI for gas
+   - If low, tell user to fund the wallet
+
+2. Run the launch: `viral-move launch`
+   - This generates a meme concept, builds + publishes Move package, stores Walrus proofs, and posts to TG
+   - The output includes package ID, coin type, explorer URL, and proof links
+
+3. Share results with the user:
+   - Token name and ticker
+   - Sui Explorer link
+   - Walrus proof URLs (one per step)
+   - Explain what each proof contains (concept reasoning, deploy details, etc.)
 
 ## Safety
 
-- Check wallet balance before launching (need at least 0.5 SUI for gas)
-- Every step is logged to Walrus before execution
-- All Telegram posts include proof links for community verification
-- Gas budget capped at 100_000_000 MIST (0.1 SUI) per publish
+- Gas budget capped at 0.5 SUI per transaction
+- Every step logged to Walrus BEFORE execution
+- Token metadata is frozen on-chain (immutable tokenomics)
