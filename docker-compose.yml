@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  viral-move:
+    build: .
+    container_name: viral-move-agent
+    volumes:
+      - ./workspace:/home/node/workspace
+      - ./config:/home/node/.openclaw
+      - ./contracts:/home/node/viral-move/contracts
+    ports:
+      - "18789:18789"
+    environment:
+      - SUI_NETWORK=${SUI_NETWORK:-testnet}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHANNEL_ID=${TELEGRAM_CHANNEL_ID}
+      - WALRUS_EPOCHS=${WALRUS_EPOCHS:-5}
+      - TOKEN_TEMPLATE_DIR=/home/node/viral-move/contracts/token-template
+      - GENERATED_CONTRACTS_DIR=/home/node/viral-move/contracts/generated
+      - SKILLS_DIR=/home/node/workspace/skills
+      - SOUL_MD_PATH=/home/node/workspace/SOUL.md
+      - SUI_PRIVATE_KEY_PATH=/run/secrets/sui_private_key
+    secrets:
+      - sui_private_key
+    networks:
+      - viral-net
+    security_opt:
+      - no-new-privileges:true
+    restart: unless-stopped
+
+secrets:
+  sui_private_key:
+    file: ./secrets/sui_private_key.txt
+
+networks:
+  viral-net:
+    driver: bridge

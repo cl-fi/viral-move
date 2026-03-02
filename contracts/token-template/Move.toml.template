@@ -1,0 +1,9 @@
+[package]
+name = "{{PACKAGE_NAME}}"
+edition = "2024.beta"
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "framework/testnet", override = true }
+
+[addresses]
+{{PACKAGE_NAME}} = "0x0"

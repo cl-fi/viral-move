@@ -1,0 +1,24 @@
+{
+  "name": "@viral-move/agent",
+  "version": "1.0.0",
+  "description": "Viral Move - Autonomous AI meme token dev on Sui. Anti-rug, provably transparent.",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "dev": "tsx src/index.ts",
+    "cli": "tsx src/index.ts"
+  },
+  "dependencies": {
+    "@mysten/sui": "^1.21.0",
+    "chalk": "^5.3.0",
+    "commander": "^13.0.0",
+    "dotenv": "^16.4.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "gateway": {
+    "mode": "local",
+    "port": 18789
+  },
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "botToken": "${TELEGRAM_BOT_TOKEN}",
+      "dmPolicy": "open",
+      "groupPolicy": "open"
+    }
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "/home/node/workspace",
+      "model": "anthropic/claude-sonnet-4-6"
+    }
+  },
+  "heartbeat": {
+    "enabled": true,
+    "interval_minutes": 15
+  },
+  "exec": {
+    "enabled": true,
+    "allowed_commands": [
+      "node /home/node/viral-move/dist/cli.js *",
+      "clawhub search *",
+      "clawhub install *",
+      "clawhub list",
+      "sui client gas",
+      "sui client active-address"
+    ]
+  },
+  "skills_dir": "/home/node/workspace/skills"
+}

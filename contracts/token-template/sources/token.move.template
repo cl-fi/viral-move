@@ -1,0 +1,23 @@
+#[allow(deprecated_usage)]
+module {{PACKAGE_NAME}}::{{WITNESS_NAME}} {
+    use sui::coin;
+
+    /// One Time Witness — must match module name
+    public struct {{WITNESS_NAME}} has drop {}
+
+    fun init(witness: {{WITNESS_NAME}}, ctx: &mut TxContext) {
+        let (treasury_cap, metadata) = coin::create_currency(
+            witness,
+            {{DECIMALS}},
+            b"{{SYMBOL}}",
+            b"{{NAME}}",
+            b"{{DESCRIPTION}}",
+            option::none(),
+            ctx
+        );
+        // Transfer TreasuryCap to deployer for minting
+        transfer::public_transfer(treasury_cap, ctx.sender());
+        // Freeze metadata — immutable tokenomics, anti-rug
+        transfer::public_freeze_object(metadata);
+    }
+}
