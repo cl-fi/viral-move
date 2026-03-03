@@ -27,7 +27,7 @@ Viral Move runs entirely on the **OpenClaw Gateway** — a production-grade agen
 │  └── WebChat  ← dashboard at http://localhost:18789           │
 │                                                                │
 │  Agent: "viral-move" (SOUL.md personality + AGENTS.md rules)  │
-│  ├── LLM: Claude Sonnet 4.6 (fallback: GPT-4.1-mini)        │
+│  ├── LLM: Gemini 3 Flash (fallback: Gemini 3 Pro)            │
 │  │                                                             │
 │  ├── Skills (loaded from workspace/skills/)                   │
 │  │   ├── viral-launch  → trigger token launch cycle           │
@@ -56,7 +56,7 @@ Viral Move runs entirely on the **OpenClaw Gateway** — a production-grade agen
 
 | Capability | Provided By |
 |-----------|------------|
-| Conversational AI | OpenClaw LLM integration (Claude / GPT) |
+| Conversational AI | OpenClaw LLM integration (Gemini / Claude / GPT) |
 | Telegram bot (send + receive) | OpenClaw Telegram channel adapter |
 | Web dashboard + chat history | OpenClaw WebChat UI at gateway port |
 | Autonomous heartbeat loop | OpenClaw heartbeat scheduler |
@@ -126,7 +126,7 @@ Every step logs its **reasoning** (why the agent decided to act) and **result** 
 | Component | Technology |
 |-----------|-----------|
 | Agent Framework | **OpenClaw** (Gateway + Skills + Heartbeat + WebChat) |
-| LLM | Claude Sonnet 4.6 via OpenClaw (fallback: GPT-4.1-mini) |
+| LLM | Gemini 3 Flash via OpenClaw (fallback: Gemini 3 Pro) |
 | Blockchain | Sui (Move) |
 | Smart Contracts | Move OTW token template |
 | Proof Storage | Walrus decentralized storage |
@@ -168,9 +168,6 @@ viral-move/
 │       ├── Move.toml.template
 │       └── sources/token.move.template
 ├── setup.sh                     # One-command local setup script
-├── Dockerfile                   # Multi-stage: build CLI + OpenClaw runtime
-├── docker-compose.yml           # Local build + run
-├── docker-compose.hub.yml       # Pull from Docker Hub + run
 └── .env.example                 # Configuration template
 ```
 
@@ -184,7 +181,7 @@ viral-move/
 - **OpenClaw** installed globally (`npm install -g openclaw`)
 - **Telegram Bot** token from [@BotFather](https://t.me/BotFather)
 - **Telegram Channel/Group** with bot added as admin
-- **LLM API Key** — at least one of: `ANTHROPIC_API_KEY` or `OPENAI_API_KEY`
+- **LLM API Key** — at least one of: `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, or `OPENAI_API_KEY`
 
 ### Setup
 
@@ -195,7 +192,8 @@ cp .env.example .env
 #   SUI_PRIVATE_KEY        — from: sui keytool export --key-identity <address> --json
 #   TELEGRAM_BOT_TOKEN     — from @BotFather
 #   TELEGRAM_CHANNEL_ID    — your channel/group ID
-#   ANTHROPIC_API_KEY      — for Claude (primary LLM)
+#   GEMINI_API_KEY         — for Gemini 3 Flash (primary LLM)
+#   (or ANTHROPIC_API_KEY / OPENAI_API_KEY)
 
 # 2. Run setup (builds CLI, installs workspace, configures OpenClaw)
 bash setup.sh
@@ -248,79 +246,6 @@ viral-move evolve
 # Autonomous loop (multiple cycles)
 viral-move loop -n 5
 ```
-
-## Docker Deployment
-
-The entire stack — OpenClaw Gateway + Sui CLI + our viral-move CLI tools — is packaged into a single Docker image. No local Node.js or Sui installation required.
-
-### Option A: Pull from Docker Hub (recommended for testers)
-
-```bash
-# 1. Copy env template and fill in your keys
-cp .env.example .env
-# edit .env:
-#   SUI_PRIVATE_KEY      ← your Sui wallet private key (base64)
-#   TELEGRAM_BOT_TOKEN   ← from @BotFather
-#   TELEGRAM_CHANNEL_ID  ← your channel/group ID
-#   ANTHROPIC_API_KEY    ← for Claude LLM (or OPENAI_API_KEY)
-
-# 2. Run with docker-compose.hub.yml (pulls image from Docker Hub)
-docker compose -f docker-compose.hub.yml up
-
-# 3. Open the dashboard
-open http://localhost:18789
-```
-
-> The container automatically:
-> - Initialises the Sui client with your private key
-> - Connects the Telegram bot
-> - Starts the OpenClaw Gateway with all 3 skills loaded
-> - Begins the 15-minute heartbeat cycle
-
-### Option B: Build from Source
-
-```bash
-# Build the image locally
-docker compose up --build
-
-# Or build and tag manually
-docker build -t viral-move:local .
-docker run --env-file .env -p 18789:18789 viral-move:local
-```
-
-### Push to Docker Hub
-
-```bash
-# Login
-docker login
-
-# Build for both amd64 and arm64 (Mac M-series + Linux servers)
-docker buildx create --use
-docker buildx build \
-  --platform linux/amd64,linux/arm64 \
-  -t YOUR_DOCKERHUB_USERNAME/viral-move:latest \
-  --push .
-
-# Others can now run it with just:
-# docker compose -f docker-compose.hub.yml up
-```
-
-Replace `DOCKERHUB_USERNAME` in `docker-compose.hub.yml` with your actual Docker Hub username before pushing.
-
-### What's inside the image
-
-| Layer | Contents |
-|-------|----------|
-| Base | Ubuntu 24.04 (glibc 2.39 for Sui CLI compatibility) |
-| Runtime | Node.js 22 (copied from build stage) |
-| Gateway | OpenClaw (installed globally via npm) |
-| Sui | Sui CLI v1.66.2 (downloaded from GitHub releases) |
-| Agent CLI | `viral-move` wrapper → `node dist/index.js` |
-| Workspace | SOUL.md, AGENTS.md, HEARTBEAT.md, 3 skills |
-| Config | openclaw.json + exec-approvals.json |
-| Contracts | Move token template |
-
-All sensitive values (private key, API keys, TG token) are passed via environment variables — nothing is baked into the image.
 
 ## Trust Model
 
