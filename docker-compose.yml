@@ -23,9 +23,13 @@ services:
       # ── Walrus ───────────────────────────────────────────────────
       - WALRUS_EPOCHS=${WALRUS_EPOCHS:-5}
 
-    # Optional: mount for persistent generated contracts + Sui state
+      # ── OpenClaw dashboard auth token (auto-generated if not set) ─
+      - OPENCLAW_AUTH_TOKEN=${OPENCLAW_AUTH_TOKEN:-}
+
+    # Persist generated contracts across restarts.
+    # Note: ~/.sui is NOT persisted — Sui config is regenerated from
+    # SUI_PRIVATE_KEY on every start by docker-entrypoint.sh.
     volumes:
-      - sui-config:/home/viral/.sui
       - generated-contracts:/home/viral/viral-move/contracts/generated
 
     # Optional: use Docker secret instead of SUI_PRIVATE_KEY env var
@@ -37,7 +41,6 @@ services:
     restart: unless-stopped
 
 volumes:
-  sui-config:
   generated-contracts:
 
 # secrets:

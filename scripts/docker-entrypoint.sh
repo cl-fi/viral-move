@@ -68,10 +68,19 @@ else
   echo "[WARN] Could not detect address. Sui CLI publish may fail."
 fi
 
+# ─── Generate OpenClaw auth token if not provided ──────────────────
+if [ -z "$OPENCLAW_AUTH_TOKEN" ]; then
+  OPENCLAW_AUTH_TOKEN=$(node -e "process.stdout.write(require('crypto').randomBytes(24).toString('hex'))")
+  export OPENCLAW_AUTH_TOKEN
+  echo "OpenClaw dashboard token: $OPENCLAW_AUTH_TOKEN"
+  echo "  → Open http://localhost:18789 and enter this token"
+fi
+
 echo "──────────────────────────────────────────"
 echo "  Viral Move Agent Starting"
 echo "  Network: $NETWORK"
 echo "  Address: ${ADDRESS:-unknown}"
+echo "  Dashboard: http://localhost:18789"
 echo "──────────────────────────────────────────"
 
 # ─── Launch the agent ──────────────────────────────────────────────

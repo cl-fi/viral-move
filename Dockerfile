@@ -52,10 +52,12 @@ RUN useradd -m -s /bin/bash viral
 WORKDIR /home/viral
 
 # ── Directory layout ──
+# Pre-create all writable dirs here so named volume mounts inherit viral ownership
 RUN mkdir -p \
     viral-move/dist \
-    viral-move/contracts \
-    .openclaw/workspace/skills
+    viral-move/contracts/generated \
+    .openclaw/workspace/skills \
+    .sui/sui_config
 
 # ── Copy built CLI ──
 COPY --from=builder /build/dist          ./viral-move/dist
@@ -93,7 +95,7 @@ ENV GENERATED_CONTRACTS_DIR=/home/viral/viral-move/contracts/generated
 
 # ── Health check ──
 HEALTHCHECK --interval=30s --timeout=5s --start-period=45s \
-  CMD node -e "fetch('http://localhost:18789/healthz').then(r=>r.ok?process.exit(0):process.exit(1)).catch(()=>process.exit(1))"
+  CMD node -e "fetch('http://localhost:18789/').then(r=>r.ok?process.exit(0):process.exit(1)).catch(()=>process.exit(1))"
 
 EXPOSE 18789
 

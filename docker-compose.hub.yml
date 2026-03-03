@@ -30,9 +30,12 @@ services:
       # ── Walrus ───────────────────────────────────────────────────
       - WALRUS_EPOCHS=${WALRUS_EPOCHS:-5}
 
-    # Persist Sui client config + generated contracts across restarts
+      # ── OpenClaw dashboard auth token (auto-generated if not set) ─
+      - OPENCLAW_AUTH_TOKEN=${OPENCLAW_AUTH_TOKEN:-}
+
+    # Persist generated contracts across restarts.
+    # ~/.sui is NOT persisted — regenerated from SUI_PRIVATE_KEY on each start.
     volumes:
-      - sui-config:/home/viral/.sui
       - generated-contracts:/home/viral/viral-move/contracts/generated
 
     security_opt:
@@ -40,5 +43,4 @@ services:
     restart: unless-stopped
 
 volumes:
-  sui-config:
   generated-contracts:

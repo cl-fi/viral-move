@@ -1,6 +1,16 @@
 {
+  "meta": {
+    "lastTouchedVersion": "2026.3.1",
+    "lastTouchedAt": "2026-03-02T10:58:30.974Z"
+  },
+
   "gateway": {
-    "port": 18789
+    "port": 18789,
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "${OPENCLAW_AUTH_TOKEN}"
+    }
   },
 
   "agents": {
@@ -9,6 +19,9 @@
       "model": {
         "primary": "anthropic/claude-sonnet-4-6",
         "fallbacks": ["openai/gpt-4.1-mini"]
+      },
+      "compaction": {
+        "mode": "safeguard"
       },
       "heartbeat": {
         "every": "15m",
@@ -44,5 +57,12 @@
       "ask": "on-miss",
       "notifyOnExit": true
     }
+  },
+
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
   }
 }
